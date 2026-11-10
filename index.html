@@ -7,19 +7,30 @@
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&amp;family=Noto+Sans+JP:wght@400;500;700&amp;family=Noto+Sans:wght@400;500;700&amp;display=swap">
 <style>
   body { margin: 0; background: #eef1f2; font-family: 'Noto Sans TC', 'PingFang TC', sans-serif; color: #404040; }
-  header { padding: 32px 24px 8px; }
-  header h1 { margin: 0; font-size: 28px; }
+  header { padding: 24px 24px 8px; display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px; }
+  header h1 { margin: 0; font-size: 26px; }
+  .zoom { display: flex; align-items: center; gap: 6px; font-size: 14px; color: #5f6b6d; }
+  .zoom button { border: 1px solid #c9d6d8; background: #fff; color: #404040; border-radius: 8px; padding: 6px 12px; font: inherit; cursor: pointer; }
+  .zoom button[aria-pressed="true"] { background: #3aa8c0; border-color: #3aa8c0; color: #fff; }
   main { padding: 8px 24px 48px; display: flex; flex-direction: column; gap: 48px; }
   .group h2 { margin: 0 0 14px; font-size: 20px; font-weight: 700; }
-  .row { display: flex; flex-wrap: wrap; gap: 32px; align-items: flex-start; }
+  .row { display: flex; flex-wrap: wrap; gap: 24px; align-items: flex-start; }
   .board { flex: none; }
   .board h3 { margin: 0 0 8px; font-size: 14px; font-weight: 500; color: #5f6b6d; }
-  .frame { background: #fff; box-shadow: 0 4px 20px rgba(0,0,0,.08); overflow: hidden; }
+  .frame { zoom: var(--z, .7); background: #fff; box-shadow: 0 4px 20px rgba(0,0,0,.08); overflow: hidden; }
   .frame button { cursor: pointer; }
 </style>
 </head>
 <body>
-  <header><h1>旅人求診首頁排版提案</h1></header>
+  <header>
+    <h1>旅人求診首頁排版提案</h1>
+    <div class="zoom" role="group" aria-label="畫面大小">
+      <span>畫面大小</span>
+      <button type="button" data-z=".5">50%</button>
+      <button type="button" data-z=".7" aria-pressed="true">70%</button>
+      <button type="button" data-z="1">原尺寸</button>
+    </div>
+  </header>
   <main>
     <section class="group">
       <h2>現況：直式卡片</h2>
@@ -978,5 +989,15 @@
       </div>
     </section>
   </main>
+<script>
+  const buttons = document.querySelectorAll('.zoom button');
+  function setZoom(z) {
+    document.documentElement.style.setProperty('--z', z);
+    buttons.forEach(b => b.setAttribute('aria-pressed', String(b.dataset.z === z)));
+    try { localStorage.setItem('home-layout-zoom', z); } catch (e) {}
+  }
+  buttons.forEach(b => b.addEventListener('click', () => setZoom(b.dataset.z)));
+  try { const saved = localStorage.getItem('home-layout-zoom'); if (saved) setZoom(saved); } catch (e) {}
+</script>
 </body>
 </html>
